@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia de Baile</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #e67e22;
+        }
+        h2 {
+            color: #2980b9;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #3498db;
+        }
+        .message, .error {
+            margin-top: 15px;
+            display: none;
+        }
+        .message {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido a la Academia de Baile</h1>
+
+    <div class="form-container">
+        <h2>Formulario de Inscripción</h2>
+        <form id="formInscripcion" onsubmit="return handleSubmit(event, 'Inscripcion')">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <input type="submit" value="Inscribirse">
+            <div class="message" id="messageInscripcion">¡Inscripción exitosa!</div>
+            <div class="error" id="errorInscripcion"></div>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h2>Formulario de Contacto</h2>
+        <form id="formContacto" onsubmit="return handleSubmit(event, 'Contacto')">
+            <label for="nombreContacto">Nombre:</label>
+            <input type="text" id="nombreContacto" name="nombreContacto" required>
+            <label for="mensaje">Mensaje:</label>
+            <textarea id="mensaje" name="mensaje" required></textarea>
+            <input type="submit" value="Enviar">
+            <div class="message" id="messageContacto">¡Mensaje enviado!</div>
+            <div class="error" id="errorContacto"></div>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h2>Formulario de Retroalimentación</h2>
+        <form id="formRetroalimentacion" onsubmit="return handleSubmit(event, 'Retroalimentacion')">
+            <label for="satisfaccion">¿Qué tan satisfecho estás con nuestra academia?</label>
+            <select id="satisfaccion" name="satisfaccion" required>
+                <option value="satisfecho">Satisfecho</option>
+                <option value="neutro">Neutro</option>
+                <option value="insatisfecho">Insatisfecho</option>
+            </select>
+            <input type="submit" value="Enviar Retroalimentación">
+            <div class="message" id="messageRetroalimentacion">¡Gracias por tu retroalimentación!</div>
+            <div class="error" id="errorRetroalimentacion"></div>
+        </form>
+    </div>
+
+    <script>
+        function handleSubmit(event, formType) {
+            event.preventDefault(); // Evita el envío del formulario
+            
+            const form = event.target;
+            const messageDiv = document.getElementById('message' + formType);
+            const errorDiv = document.getElementById('error' + formType);
+
+            // Validaciones simples
+            const nombre = form.nombre ? form.nombre.value.trim() : null;
+            const email = form.email ? form.email.value.trim() : null;
+
+            if (formType === 'Inscripcion' && (!nombre || !validateEmail(email))) {
+                errorDiv.textContent = "Por favor, completa los campos correctamente.";
+                errorDiv.style.display = 'block';
+                messageDiv.style.display = 'none';
+                return false;
+            }
+
+            // Guardar datos en localStorage
+            saveData(formType, { nombre, email });
+
+            // Si todo está bien
+            errorDiv.style.display = 'none';
+            messageDiv.style.display = 'block'; // Muestra el mensaje
+            
+            // Resetea el formulario
+            form.reset();
+            return false; // Evita el comportamiento por defecto
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function saveData(formType, data) {
+            let storedData = JSON.parse(localStorage.getItem(formType)) || [];
+            storedData.push(data);
+            localStorage.setItem(formType, JSON.stringify(storedData));
+        }
+    </script>
+</body>
+</html>
